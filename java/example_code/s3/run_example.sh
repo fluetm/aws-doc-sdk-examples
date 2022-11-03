@@ -9,4 +9,4 @@ export className=$1
 echo "## Running $className..."
 shift
 echo "## arguments $@..."
-mvn exec:java -Dexec.mainClass="aws.example.s3.$className" -Dexec.args="$@" -Dexec.cleanupDaemonThreads=false
+mvn exec:java -Dexec.mainClass="aws.example.s3.$className" -Dexec.args="$@" -Dexec.cleanupDaemonThreads=false -Daws.region="us-east-1"

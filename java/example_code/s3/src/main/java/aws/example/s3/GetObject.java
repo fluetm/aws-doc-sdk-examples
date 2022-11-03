@@ -58,7 +58,8 @@ public class GetObject {
         String key_name = args[1];
 
         System.out.format("Downloading %s from S3 bucket %s...\n", key_name, bucket_name);
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
+        long startTime = System.currentTimeMillis();
         try {
             S3Object o = s3.getObject(bucket_name, key_name);
             S3ObjectInputStream s3is = o.getObjectContent();
@@ -80,6 +81,7 @@ public class GetObject {
             System.err.println(e.getMessage());
             System.exit(1);
         }
-        System.out.println("Done!");
+        double elapsedTimeSec = (System.currentTimeMillis() - startTime) / 1000;
+        System.out.println("Done in " + elapsedTimeSec + " secs!");
     }
 }

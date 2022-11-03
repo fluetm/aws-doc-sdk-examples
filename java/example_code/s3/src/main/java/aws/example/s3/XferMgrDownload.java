@@ -25,6 +25,8 @@ package aws.example.s3;
 // snippet-start:[s3.java1.s3_xfer_mgr_download.import]
 
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.transfer.Download;
 import com.amazonaws.services.s3.transfer.MultipleFileDownload;
 import com.amazonaws.services.s3.transfer.TransferManager;
@@ -72,13 +74,19 @@ public class XferMgrDownload {
 
         // snippet-start:[s3.java1.s3_xfer_mgr_download.single]
         File f = new File(file_path);
-        TransferManager xfer_mgr = TransferManagerBuilder.standard().build();
+        // MJF: try this with accelerate mode enabled
+        //AmazonS3 s3client = AmazonS3ClientBuilder.standard().enableAccelerateMode().build();
+        AmazonS3 s3client = AmazonS3ClientBuilder.standard().build();
+        TransferManager xfer_mgr = TransferManagerBuilder.standard().withS3Client(s3client).build();
         try {
+            long startTime = System.currentTimeMillis();
             Download xfer = xfer_mgr.download(bucket_name, key_name, f);
             // loop with Transfer.isDone()
             XferMgrProgress.showTransferProgress(xfer);
             // or block with Transfer.waitForCompletion()
             XferMgrProgress.waitForCompletion(xfer);
+            double elapsedTimeSec = (System.currentTimeMillis() - startTime) / 1000;
+            System.out.println("Downloaded " + key_name + " in " + elapsedTimeSec + " seconds with acceleration enabled");
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);

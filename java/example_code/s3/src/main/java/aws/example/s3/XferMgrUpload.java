@@ -111,11 +111,14 @@ public class XferMgrUpload {
         File f = new File(file_path);
         TransferManager xfer_mgr = TransferManagerBuilder.standard().build();
         try {
+            long startTime = System.currentTimeMillis();
             Upload xfer = xfer_mgr.upload(bucket_name, key_name, f);
             // loop with Transfer.isDone()
             XferMgrProgress.showTransferProgress(xfer);
             //  or block with Transfer.waitForCompletion()
             XferMgrProgress.waitForCompletion(xfer);
+            double elapsedTimeSec = (System.currentTimeMillis() - startTime) / 1000;
+            System.out.println("Uploaded " + f.getName() + " in " + elapsedTimeSec + " seconds");
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);
